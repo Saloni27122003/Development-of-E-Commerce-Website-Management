@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Shoply — Products</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <a href="index.html" class="brand">Shoply</a>
+      <div class="navlinks">
+        <a href="product.html" class="btn">Products</a>
+        <a href="cart.html" class="btn">Cart</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Products</h1>
+
+    <!-- ✅ User Input to Identify Customer -->
+    <div >
+        <label >Enter Username: </label>
+        <input id="username" placeholder="e.g. aditya" >
+    </div>
+
+    <div id="productGrid" class="grid"></div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+  const grid = document.getElementById('productGrid');
+  const userInput = document.getElementById('username');
+
+  function render() {
+      grid.innerHTML = '';
+      PRODUCTS.forEach(p => {
+          const el = document.createElement('div'); 
+          el.className = 'card';
+          el.innerHTML = `
+              <img src="${p.img}" alt="${p.title}">
+              <h3>${p.title}</h3>
+              <div class="price">$${p.price.toFixed(2)}</div>
+              <p style="color:#64748b; font-size:13px;">${p.desc}</p>
+
+              <div style="display:flex; gap:8px;">
+                  <input class="qty-input" type="number" min="1" value="1" style="width:70px;">
+                  <button data-id="${p.id}">Add to Cart</button>
+              </div>`;
+          grid.appendChild(el);
+      });
+  }
+
+  grid.addEventListener('click', async (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+
+      const user = userInput.value.trim();
+      if (!user) return alert("⚠ Please enter username first!");
+
+      const card = btn.closest('.card');
+      const qty = Number(card.querySelector('.qty-input').value) || 1;
+
+      const body = {
+          username: user,
+          product_id: `${user}.${btn.dataset.id}`,
+          qty: qty,
+          p_name: card.querySelector('h3').innerText,
+          price: Number(card.querySelector('.price').innerText.replace('$',''))
+      };
+
+      const res = await fetch("http://127.0.0.1:5000/cart/add_to_cart", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      alert(data.message || "Added to cart");
+  });
+
+  render();
+  </script>
+</body>
+</html>

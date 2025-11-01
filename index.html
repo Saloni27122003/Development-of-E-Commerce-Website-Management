@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Shoply — Home</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- <link rel="stylesheet" href="style.css" /> -->
+  <link rel="stylesheet" href="newstyle.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <a href="index.html" class="brand">Shoply</a>
+      <div class="navlinks">
+        <a href="product.html" class="btn">Products</a>
+        <a href="cart.html" class="btn">Cart</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h1>Small store — real style</h1>
+        <p>Clean static demo shop. Browse products and add to cart. Everything stored locally in your browser.</p>
+        <p >
+            <a href="product.html" class="btn">
+                Browse Products →</a>
+            </p>
+      </div>
+      <img src="https://picsum.photos/seed/hero/600/360" alt="hero" >
+    </section>
+
+    <section>
+      <h2>Featured</h2>
+      <div id="featured" class="grid"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    // render first 3 products as featured
+    const featuredRoot = document.getElementById('featured');
+    const featured = PRODUCTS.slice(0,3);
+    featured.forEach(p => {
+      const card = document.createElement('div'); card.className = 'card';
+      card.innerHTML = `
+        <img src="${p.img}" alt="${p.title}">
+        <h3>${p.title}</h3>
+        <div class="price">$${p.price.toFixed(2)}</div>
+        <p style="color:#64748b; font-size:13px;">${p.desc}</p>
+        <div style="display:flex; gap:8px;">
+          <button data-id="${p.id}">Add to cart</button>
+          <a href="products.html" class="btn" style="background:#e2e8f0; color:#0f172a; display:inline-flex; align-items:center;">View</a>
+        </div>`;
+      featuredRoot.appendChild(card);
+    });
+
+    featuredRoot.addEventListener('click', e => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      addToCart(btn.dataset.id, 1);
+      toast('Added to cart');
+    });
+  </script>
+</body>
+</html>
