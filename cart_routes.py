@@ -11,7 +11,7 @@ LOGGED_USER_ID = f"12400{i}"
 db = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="AdityaVerma@2005",
+        password="",
         database="ecommerce_demo"
     )
 cursor = db.cursor(dictionary=True)
@@ -45,3 +45,4 @@ def add_to_cart():
 def view_cart():
     cursor.execute("SELECT * FROM cart WHERE user_id=%s", (LOGGED_USER_ID,))
     return jsonify(cursor.fetchall())
+
